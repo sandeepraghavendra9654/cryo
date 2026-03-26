@@ -26,7 +26,10 @@ export const SocketProvider = ({ children }) => {
 
         const socketUrl = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
 
+        const token = localStorage.getItem('auth_token');
+
         const newSocket = io(socketUrl, {
+            auth: { token },
             withCredentials: true,
             transports: ['websocket', 'polling'],
             reconnection: true,
