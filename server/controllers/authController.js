@@ -17,7 +17,7 @@ const setAuthCookie = (res, token) => {
     res.cookie('auth_token', token, {
         httpOnly: true,
         secure: isProduction,
-        sameSite: isProduction ? 'strict' : 'lax',
+        sameSite: isProduction ? 'none' : 'lax',
         maxAge: 8 * 60 * 60 * 1000,
         ...(isProduction && process.env.COOKIE_DOMAIN && { domain: process.env.COOKIE_DOMAIN })
     });
@@ -28,7 +28,7 @@ const setQmgrCookie = (res, qmgrToken) => {
     res.cookie('qmgr_token', qmgrToken, {
         httpOnly: true,
         secure: isProduction,
-        sameSite: isProduction ? 'strict' : 'lax',
+        sameSite: isProduction ? 'none' : 'lax',
         maxAge: 2 * 60 * 60 * 1000,
         ...(isProduction && process.env.COOKIE_DOMAIN && { domain: process.env.COOKIE_DOMAIN })
     });
