@@ -6,10 +6,12 @@ import GlitchText from '../components/GlitchText';
 import TerminalCard from '../components/TerminalCard';
 import ApprovalStatusBadge from '../components/ApprovalStatusBadge';
 import { useSocket } from '../context/SocketContext';
+import { useAuth } from '../context/AuthContext';
 
 const PendingApproval = () => {
     const navigate = useNavigate();
     const { socket } = useSocket();
+    const { checkAuth } = useAuth();
     const [status, setStatus] = useState(null);
     const [rejectionReason, setRejectionReason] = useState(null);
     const [checking, setChecking] = useState(true);
@@ -29,10 +31,16 @@ const PendingApproval = () => {
 
     const handleApproved = React.useCallback(async () => {
         try {
-            await api.post('/auth/refresh-token');
+            const res = await api.post('/auth/refresh-token');
+            // Save the refreshed token with APPROVED status
+            if (res.data.token) {
+                localStorage.setItem('auth_token', res.data.token);
+            }
+            // Re-check auth so AuthContext updates user state to APPROVED
+            await checkAuth();
         } catch {}
         navigate('/dashboard', { replace: true });
-    }, [navigate]);
+    }, [navigate, checkAuth]);
 
     // Check immediately on mount (handles page reload)
     useEffect(() => {
@@ -85,7 +93,7 @@ const PendingApproval = () => {
                         <div className="text-center space-y-4">
                             <h2 className="text-neon-green text-2xl font-bold">APPROVED</h2>
                             <ApprovalStatusBadge status="APPROVED" />
-                            <p className="text-electric-cyan text-sm animate-pulse">Redirecting to login...</p>
+                            <p className="text-electric-cyan text-sm animate-pulse">Redirecting to dashboard...</p>
                         </div>
                     </TerminalCard>
                 </div>
