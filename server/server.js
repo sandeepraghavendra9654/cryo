@@ -18,6 +18,7 @@ const errorHandler = require('./middleware/errorHandler');
 const Team = require('./models/Team');
 
 const app = express();
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 
 // ─── SECURITY MIDDLEWARE ─────────────────────────────────────
